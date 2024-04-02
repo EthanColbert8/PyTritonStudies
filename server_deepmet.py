@@ -33,7 +33,7 @@ def __infer_fn(**inputs):
     output = SESS.run(OUTPUT_TENSOR, feed_dict={"input:0": tensor, "input_cat0:0": tensor_cat0, "input_cat1:0": tensor_cat1, "input_cat2:0": tensor_cat2})
     return [output]
 
-with Triton(config=TritonConfig(http_port=9000, grpc_port=9001, metrics_port=9002)) as triton:
+with Triton(config=TritonConfig(http_port=9000, grpc_port=9001, metrics_port=9002,log_verbose=0)) as triton:
     logger.info("loading model...")
     triton.bind(
         model_name = "mlp_random_tensorflow_graphdef",

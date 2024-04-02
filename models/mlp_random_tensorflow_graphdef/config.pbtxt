@@ -1,0 +1,116 @@
+{
+    "name": "mlp_random_tensorflow_graphdef",
+    "platform": "",
+    "backend": "python",
+    "version_policy": {
+        "latest": {
+            "num_versions": 1
+        }
+    },
+    "max_batch_size": 1000,
+    "input": [
+        {
+            "name": "INPUT_1",
+            "data_type": "TYPE_FP32",
+            "format": "FORMAT_NONE",
+            "dims": [
+                4500,
+                8
+            ],
+            "is_shape_tensor": false,
+            "allow_ragged_batch": false,
+            "optional": false
+        },
+        {
+            "name": "INPUT_2",
+            "data_type": "TYPE_FP32",
+            "format": "FORMAT_NONE",
+            "dims": [
+                4500,
+                1
+            ],
+            "is_shape_tensor": false,
+            "allow_ragged_batch": false,
+            "optional": false
+        },
+        {
+            "name": "INPUT_3",
+            "data_type": "TYPE_FP32",
+            "format": "FORMAT_NONE",
+            "dims": [
+                4500,
+                1
+            ],
+            "is_shape_tensor": false,
+            "allow_ragged_batch": false,
+            "optional": false
+        },
+        {
+            "name": "INPUT_4",
+            "data_type": "TYPE_FP32",
+            "format": "FORMAT_NONE",
+            "dims": [
+                4500,
+                1
+            ],
+            "is_shape_tensor": false,
+            "allow_ragged_batch": false,
+            "optional": false
+        }
+    ],
+    "output": [
+        {
+            "name": "output/BiasAdd",
+            "data_type": "TYPE_FP32",
+            "dims": [
+                2
+            ],
+            "label_filename": "",
+            "is_shape_tensor": false
+        }
+    ],
+    "batch_input": [],
+    "batch_output": [],
+    "optimization": {
+        "priority": "PRIORITY_DEFAULT",
+        "input_pinned_memory": {
+            "enable": true
+        },
+        "output_pinned_memory": {
+            "enable": true
+        },
+        "gather_kernel_buffer_threshold": 0,
+        "eager_batching": false
+    },
+    "dynamic_batching": {
+        "preferred_batch_size": [
+            1000
+        ],
+        "max_queue_delay_microseconds": 0,
+        "preserve_ordering": false,
+        "priority_levels": 0,
+        "default_priority_level": 0,
+        "priority_queue_policy": {}
+    },
+    "instance_group": [
+        {
+            "name": "mlp_random_tensorflow_graphdef_0",
+            "kind": "KIND_CPU",
+            "count": 1,
+            "gpus": [],
+            "secondary_devices": [],
+            "profile": [],
+            "passive": false,
+            "host_policy": ""
+        }
+    ],
+    "default_model_filename": "model.py",
+    "cc_model_filenames": {},
+    "metric_tags": {},
+    "parameters": {
+        "shared-memory-socket": {
+            "string_value": "ipc:///home1/yfeng/.cache/pytriton/workspace_yfsavr12/ipc_proxy_backend_mlp_random_tensorflow_graphdef"
+        }
+    },
+    "model_warmup": []
+}
