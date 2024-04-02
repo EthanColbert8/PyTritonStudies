@@ -1,5 +1,5 @@
 {
-    "name": "pnet_pytorch",
+    "name": "pnet_onnx",
     "platform": "",
     "backend": "python",
     "version_policy": {
@@ -116,17 +116,8 @@
         "default_priority_level": 0,
         "priority_queue_policy": {}
     },
-    "instance_group": [
-        {
-            "name": "pnet_pytorch_0",
-            "count": 1,
-            "gpus": [],
-            "secondary_devices": [],
-            "profile": [],
-            "passive": false,
-            "host_policy": ""
-        }
-    ],
+    "cc_model_filenames": {},
+    "metric_tags": {},
     "model_warmup": []
 }
 
