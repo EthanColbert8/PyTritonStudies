@@ -22,7 +22,7 @@ pip install tensorflow-rocm
 # install pytorch
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm5.7
 # install onnx runtime
-pip install onnxruntime-gpu
+pip install https://download.onnxruntime.ai/onnxruntime_training-1.17.0.dev20231228002%2Brocm60-cp38-cp38-manylinux_2_28_x86_64.whl
 ```
 
 Remaining issue: there seems to be some incompatiblity between TF and PyTorch on ROCm. `Import` would crash if both are imported in the same script.
