@@ -8,7 +8,10 @@ from pytriton.model_config import ModelConfig, Tensor
 from pytriton.triton import Triton, TritonConfig
 
 path = "/work1/yfeng/yfeng/sonic-models/models/particlenet_AK4/1/model.onnx"
-sess = rt.InferenceSession(path)
+providers = ["ROCMExecutionProvider", "CPUExecutionProvider"]
+sess_options = rt.SessionOptions()
+sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_ALL
+sess = rt.InferenceSession(path, sess_options=sess_options, providers=providers)
 input_name0 = sess.get_inputs()[0].name
 input_name1 = sess.get_inputs()[1].name
 input_name2 = sess.get_inputs()[2].name
