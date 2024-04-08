@@ -29,3 +29,27 @@ Remaining issue:
 - there seems to be some incompatiblity between TF and PyTorch on ROCm. `Import` would crash if both are imported in the same script.
 - Recent versions of ONNX would crash on ROCm [issue here](https://github.com/microsoft/onnxruntime/issues/20203). The version above is the latest that works on ROCm 5.7 and ONNX 1.16.3.
 
+## Running direct inference
+
+```sh
+conda activate ~/.cache/pytriton/python_backend_interpreter
+cd directinference
+python test_onnx.py
+```
+and similarly for other ones.
+
+## Running Perf Client
+
+Get the Perf Client from the Triton Inference Server image:
+```sh
+APPTAINER_CACHEDIR=/work1/yfeng/yfeng/.cache apptainer pull triton_23.01.sdk.sif docker://nvcr.io/nvidia/tritonserver:23.01-py3-sdk
+```
+The pip installed one crashed with 
+```
+perf_client: error while loading shared libraries: libb64.so.0d: cannot open shared object file: No such file or directory
+```
+
+Then inside the container:
+```sh
+perf_analyzer -m pnet_onnx --percentile=95 -u t007-001:9001 -i grpc --async -p 9001 --concurrency-range 8:8 -b 100 --shape INPUT_1:2,50 --shape INPUT_2:20,50 --shape INPUT_3:1,50 --shape INPUT_4:2,4 --shape INPUT_5:11,4 --shape INPUT_6:1,4
+```
