@@ -4,7 +4,7 @@ Some scripts used to study with PyTriton to test performance on AMD GPUs etc.
 
 ### Installation
 
-```
+```sh
 # install pytriton
 ## taken from https://triton-inference-server.github.io/pytriton/0.1.4/installation/
 CONDA_VERSION=latest
