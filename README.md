@@ -91,6 +91,7 @@ watch -n 1 rocm-smi
 
 ### Launching servers and clients
 ```sh
+conda activate pytriton
 # start the server
 cd PyTritonStudies/server
 python server_deepmet.py 
@@ -119,6 +120,7 @@ nv_inference_request_failure{model="pnet_onnx",version="1"} 0
 ```
 Run the client (in the pytriton environment):
 ```sh
+conda activate pytriton
 cd PyTritonStudies/client
 python client.py
 ```
