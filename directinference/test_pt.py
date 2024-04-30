@@ -2,7 +2,7 @@ import torch
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") 
 
-path = "/work1/yfeng/yfeng/sonic-models/models/particlenet_AK4_PT/1/model.pt"
+path = "../../sonic-models/models/particlenet_AK4_PT/1/model.pt"
 
 model = torch.jit.load(path)
 model = model.to(device)

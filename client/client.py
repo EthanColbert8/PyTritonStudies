@@ -15,6 +15,8 @@ sv_features = np.random.randn(nevts, 11, 10).astype(np.float32)
 sv_mask     = np.random.randn(nevts, 1,  10).astype(np.float32)
 
 
-with ModelClient("grpc://t007-001:9001", "pnet_onnx") as client:
+with ModelClient("grpc://localhost:9001", "pnet_onnx") as client:
     for i in range(1000):
         outputs = client.infer_batch(pf_points, pf_features, pf_mask, sv_points, sv_features, sv_mask)
+
+print (outputs)

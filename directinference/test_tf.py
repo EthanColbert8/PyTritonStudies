@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
-gfile = "/work1/yfeng/yfeng/sonic-models/models/deepmet/1/model.graphdef"
+gfile = "../../sonic-models/models/deepmet/1/model.graphdef"
 
 f = tf.io.gfile.GFile(gfile, 'rb')
 gdef = tf.compat.v1.GraphDef()

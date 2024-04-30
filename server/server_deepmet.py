@@ -7,11 +7,11 @@ from pytriton.decorators import batch
 from pytriton.model_config import ModelConfig, Tensor
 from pytriton.triton import Triton, TritonConfig
 
-logger = logging.getLogger("examples.mlp_random_tensorflow_graphdef.server")
+logger = logging.getLogger("examples.deepmet.server")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(name)s: %(message)s")
 
 def _load_model():
-    gfile = "/work1/yfeng/yfeng/sonic-models/models/deepmet/1/model.graphdef"
+    gfile = "../../sonic-models/models/deepmet/1/model.graphdef"
     f = tf.io.gfile.GFile(gfile, 'rb')
     gdef = tf.compat.v1.GraphDef()
     gdef.ParseFromString(f.read())

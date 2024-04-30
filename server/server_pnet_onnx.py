@@ -7,7 +7,7 @@ from pytriton.decorators import batch
 from pytriton.model_config import ModelConfig, Tensor
 from pytriton.triton import Triton, TritonConfig
 
-path = "/work1/yfeng/yfeng/sonic-models/models/particlenet_AK4/1/model.onnx"
+path = "../../sonic-models/models/particlenet_AK4/1/model.onnx"
 providers = ["ROCMExecutionProvider", "CPUExecutionProvider"]
 sess_options = rt.SessionOptions()
 sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_ALL

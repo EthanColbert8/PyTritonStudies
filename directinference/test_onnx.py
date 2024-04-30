@@ -1,7 +1,7 @@
 import onnxruntime as rt
 import numpy as np
 
-path = "/work1/yfeng/yfeng/sonic-models/models/particlenet_AK4/1/model.onnx"
+path = "../../sonic-models/models/particlenet_AK4/1/model.onnx"
 
 providers = [("ROCMExecutionProvider")]
 sess_options = rt.SessionOptions()
