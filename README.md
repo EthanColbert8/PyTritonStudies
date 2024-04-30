@@ -94,7 +94,7 @@ watch -n 1 rocm-smi
 conda activate pytriton
 # start the server
 cd PyTritonStudies/server
-python server_deepmet.py 
+python server_pnet_onnx.py
 ```
 The server should be launched with the output ending with
 ```log
