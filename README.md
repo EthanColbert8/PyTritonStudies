@@ -165,3 +165,17 @@ Request concurrency: 8
 Inferences/Second vs. Client p95 Batch Latency
 Concurrency: 8, throughput: 3888.33 infer/sec, latency 210364 usec
 ```
+
+### Play with TritonServer without python
+
+*Still under development*
+
+Launch the server:
+```sh
+PYTHONPATH=/work1/yfeng/yfeng/newtests/PyTritonStudies/server:/home1/yfeng/work/.cache/conda/envs/pytriton/lib/python38.zip:/home1/yfeng/work/.cache/conda/envs/pytriton/lib/python3.8:/home1/yfeng/work/.cache/conda/envs/pytriton/lib/python3.8/lib-dynload:/home1/yfeng/work/.cache/conda/envs/pytriton/lib/python3.8/site-packages /home1/yfeng/work/.cache/conda/envs/pytriton/lib/python3.8/site-packages/pytriton/tritonserver/bin/tritonserver --log-verbose 10000 --http-port 9004 --grpc-port 9005 --metrics-port 9006 --backend-config python,shm-region-prefix-name=pytrtion3285102-96eaafbb --backend-config python,shm-default-byte-size=4194304 --backend-config python,shm-growth-byte-size=1048576 --model-repository /work1/yfeng/yfeng/newtests/PyTritonStudies/models_python  --backend-directory /home1/yfeng/work/.cache/conda/envs/pytriton/lib/python3.8/site-packages/pytriton/tritonserver/backends --cache-directory /home1/yfeng/work/.cache/conda/envs/pytriton/lib/python3.8/site-packages/pytriton/tritonserver/caches
+```
+
+Launch the client (under `pytriton` environment since it needs the client modules)
+```sh
+python client/client_add_sub.py
+```
