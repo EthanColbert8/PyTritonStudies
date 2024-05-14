@@ -1,5 +1,8 @@
 import logging
 
+logger = logging.getLogger("examples.pnet_onnx.server")
+logging.basicConfig(level=logging.ERROR, format="%(asctime)s - %(levelname)s - %(name)s: %(message)s")
+
 import numpy as np
 import onnxruntime as rt
 
@@ -19,10 +22,6 @@ input_name3 = sess.get_inputs()[3].name
 input_name4 = sess.get_inputs()[4].name
 input_name5 = sess.get_inputs()[5].name
 output_name = sess.get_outputs()[0].name
-
-
-logger = logging.getLogger("examples.pnet_onnx.server")
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(name)s: %(message)s")
 
 @batch
 def __infer_fn(**inputs):

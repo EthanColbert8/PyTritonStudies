@@ -3,12 +3,13 @@ import logging
 import numpy as np
 import tensorflow as tf  # pytype: disable=import-error
 
+
+logger = logging.getLogger("examples.deepmet.server")
+logging.basicConfig(level=logging.ERROR, format="%(asctime)s - %(levelname)s - %(name)s: %(message)s")
+
 from pytriton.decorators import batch
 from pytriton.model_config import ModelConfig, Tensor
 from pytriton.triton import Triton, TritonConfig
-
-logger = logging.getLogger("examples.deepmet.server")
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(name)s: %(message)s")
 
 def _load_model():
     gfile = "../../sonic-models/models/deepmet/1/model.graphdef"
@@ -33,10 +34,10 @@ def __infer_fn(**inputs):
     output = SESS.run(OUTPUT_TENSOR, feed_dict={"input:0": tensor, "input_cat0:0": tensor_cat0, "input_cat1:0": tensor_cat1, "input_cat2:0": tensor_cat2})
     return [output]
 
-with Triton(config=TritonConfig(http_port=9000, grpc_port=9001, metrics_port=9002,log_verbose=0)) as triton:
+with Triton(config=TritonConfig(http_port=9020, grpc_port=9021, metrics_port=9022,log_verbose=0)) as triton:
     logger.info("loading model...")
     triton.bind(
-        model_name = "mlp_random_tensorflow_graphdef",
+        model_name = "deepmet",
         infer_func = __infer_fn,
         inputs = [
             Tensor(dtype=np.float32, shape=[4500, 8]), 
