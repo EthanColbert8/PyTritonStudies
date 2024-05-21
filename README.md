@@ -166,9 +166,65 @@ Inferences/Second vs. Client p95 Batch Latency
 Concurrency: 8, throughput: 3888.33 infer/sec, latency 210364 usec
 ```
 
-### Play with TritonServer without python
+# Play with TritonServer WITHOUT python interface
 
-*Still under development*
+*Still under development. Might crash or not be fully functioning*
+
+### Build PyTriton on AlmaLinux 9
+
+This might conflict with the PyTriton environment installed with `pip` before. The recommendation is to start from a new python environment, e.g., create a new python environment with `conda`.
+
+```sh
+git clone -b testCpp git@github.com:yongbinfeng/pytriton.git
+## Compile 
+make install-dev
+make dist
+```
+More information on pytriton build can be found [here](https://triton-inference-server.github.io/pytriton/0.5.2/guides/building/)
+
+The build would need `docker`. GPU support with CUDA libraries under `/usr/local/cuda/` might also be needed. If the build runs successfully, it should generate a python wheel under `dist`. Install the wheel with
+```
+pip install dist/nvidia_pytriton-*-py3-none-*.whl
+```
+
+All the relevant libs and header files should be around the directory:
+```sh
+PyTritonBase=`python -c "import pytriton;print(pytriton.__path__[0])"`
+echo $PyTritonBase
+ll $PyTritonBase
+```
+especially the binary exectuable `tritonserver` in `$PyTritonBase/tritonserver/bin` and the backend modules in `$PyTritonBase/tritonserver/backends/python`.
+
+### Testing the identity cpp backend with TritonServer executable
+
+The identity backend is a simple backend that returns the input tensor as the output tensor. It is included in the PyTriton build, saved in the wheel, and located under `$PyTritonBase/tritonserver/backends/python/identity`.
+
+Copy it to the model directory
+```sh
+cp $PyTritonBase/tritonserver/backends/python/identity $Path_to_PyTritonStudies/models_cpp/custom_zero_1_float32/1/libtriton_identity.so
+```
+
+Then launch the server using the binary executable `tritonserver` installed with PyTriton:
+```sh
+$PyTritonBase/tritonserver/bin/tritonserver --model-repository $Path_to_PyTritonStudies/models_cpp
+```
+
+The expected output should be similar to
+```log
+I0521 05:35:06.139750 574190 grpc_server.cc:2450] Started GRPCInferenceService at 0.0.0.0:8001
+I0521 05:35:06.139868 574190 http_server.cc:3555] Started HTTPService at 0.0.0.0:8000
+I0521 05:35:06.180917 574190 http_server.cc:185] Started Metrics Service at 0.0.0.0:8002
+```
+
+The client script for testing is under `client/client_identity.py`, which requires client container to run it.
+```sh
+docker pull nvcr.io/nvidia/tritonserver:23.04-py3-sdk
+docker run -v$PWD:$PWD --net=host nvcr.io/nvidia/tritonserver:23.04-py3-sdk python $PWD/client/client_identity.py
+```
+
+### Testing Python backend with TritonServer executable
+
+*Need to update the script*
 
 Launch the server:
 ```sh
