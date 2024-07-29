@@ -46,7 +46,7 @@ with Triton(config=TritonConfig(http_port=9020, grpc_port=9021, metrics_port=902
             Tensor(dtype=np.float32, shape=[4500, 1])
         ],
         outputs = [Tensor(name="output/BiasAdd", dtype=np.float32, shape=[2])],
-        config=ModelConfig(max_batch_size=1000),
+        config=ModelConfig(max_batch_size=5000),
         strict=True)
     logger.info("model loaded")
     triton.serve()

@@ -1,6 +1,7 @@
 from matplotlib import pyplot as plt
 import mplhep as hep
 import numpy as np
+import argparse
 import time
 import onnxruntime as rt
 
@@ -10,6 +11,10 @@ mpl_logger = logging.getLogger('matplotlib')
 mpl_logger.setLevel(logging.WARNING)
 
 plt.style.use(hep.style.CMS)
+
+parser = argparse.ArgumentParser()
+parser.add_argument("save_name", help="Filename for saving.", type=str)
+args = parser.parse_args()
 
 path = "/work1/yfeng/colberte/sonic-models/models/particlenet_AK4/1/model.onnx"
 save_folder = "/work1/yfeng/colberte/Scans/plots"
@@ -31,8 +36,8 @@ input_name5 = sess.get_inputs()[5].name
 
 output_name = sess.get_outputs()[0].name
 
-#batch_sizes = [4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
-batch_sizes = [120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132]
+batch_sizes = [4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
+#batch_sizes = [120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132]
 n_trials = 101 # number of timed trials to run at each batch size
 throughputs = []
 latencies = []
@@ -88,16 +93,19 @@ axs[0].plot(batch_sizes, throughputs, linestyle='-', marker='o')
 axs[1].plot(batch_sizes, latencies, linestyle='-', marker='o')
 
 axs[0].set_ylabel('Throughput [evt/s]')
-#axs[0].set_xticklabels([])
-#axs[0].set_xscale('log')
+axs[0].set_xticklabels([])
+axs[0].set_xscale('log')
 #axs[0].legend()
 axs[0].set_xlim(batch_sizes[0], batch_sizes[-1])
 
 axs[1].set_ylabel('Latency [ms]')
 axs[1].set_yscale('log')
-#axs[1].set_xticklabels([])
-#axs[1].set_xscale('log')
+axs[1].set_xticklabels([])
+axs[1].set_xscale('log')
 #axs[1].legend()
 axs[1].set_xlim(batch_sizes[0], batch_sizes[-1])
 
-fig.savefig(save_folder+"/non-triton-scan_zoomed-in_pnet-onnx_07-16-24.png")
+axs[0].set_xlabel("Batch size")
+axs[1].set_xlabel("Batch size")
+
+fig.savefig(save_folder+"/"+args.save_name)

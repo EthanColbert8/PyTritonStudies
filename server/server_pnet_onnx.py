@@ -43,7 +43,7 @@ with Triton(config=TritonConfig(http_port=9000, grpc_port=9001, metrics_port=900
             Tensor(dtype=np.float32, shape=[1,-1])
         ],
         outputs = [Tensor(dtype=np.float32, shape=[8])],
-        config=ModelConfig(max_batch_size=1000),
+        config=ModelConfig(max_batch_size=5000),
         strict=True)
     logger.info("model loaded")
     triton.serve()
