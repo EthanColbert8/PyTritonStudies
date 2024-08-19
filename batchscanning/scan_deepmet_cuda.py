@@ -5,8 +5,6 @@ import argparse
 import time
 import tensorflow as tf
 
-import plotting
-
 # All this to get matplotlib to shut up
 # import logging
 # mpl_logger = logging.getLogger('matplotlib')
@@ -19,8 +17,8 @@ parser.add_argument("save_name", help="Filename for saving.", type=str)
 parser.add_argument("gpu_type", help="GPU model for labeling", type=str)
 args = parser.parse_args()
 
-gfile = "/work1/yfeng/colberte/sonic-models/models/deepmet/1/model.graphdef"
-save_folder = "/work1/yfeng/colberte/Scans/plots"
+gfile = "/depot/cms/users/colberte/SONIC/sonic-models/models/deepmet/1/model.graphdef"
+save_folder = "/depot/cms/users/colberte/SONIC/Scans/direct/plots"
 
 f = tf.io.gfile.GFile(gfile, 'rb')
 gdef = tf.compat.v1.GraphDef()

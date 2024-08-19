@@ -1,5 +1,5 @@
-#from matplotlib import pyplot as plt
-#import mplhep as hep
+# from matplotlib import pyplot as plt
+# import mplhep as hep
 import numpy as np
 import argparse
 import time
@@ -19,14 +19,14 @@ parser.add_argument("save_name", help="Filename for saving.", type=str)
 parser.add_argument("gpu_type", help="GPU model for labeling", type=str)
 args = parser.parse_args()
 
-path = "/work1/yfeng/colberte/sonic-models/models/particlenet_AK4/1/model.onnx"
-save_folder = "/work1/yfeng/colberte/Scans/plots"
+path = "/depot/cms/users/colberte/SONIC/sonic-models/models/particlenet_AK4/1/model.onnx"
+save_folder = "/depot/cms/users/colberte/SONIC/Scans/direct/plots"
 
-#providers = ['ROCMExecutionProvider', 'CPUExecutionProvider']
-providers = ['ROCMExecutionProvider']
+#providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
+providers = ['CUDAExecutionProvider']
 sess_options = rt.SessionOptions()
-sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_ALL
-#sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_BASIC # To match runs that use older software
+#sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_ALL
+sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_BASIC # Need this if running on Gilbreth, due to old onnx
 
 sess = rt.InferenceSession(path, sess_options=sess_options, providers=providers)
 print("provider: ", sess.get_providers())
@@ -77,7 +77,6 @@ for size in batch_sizes:
 
         times.append((end_time - start_time) * 1e-9) # report elapsed time in seconds
     
-    # First trial is usually an outlier, so ignore it
     #avg_time = np.mean(np.array(times[1:]))
     times_array = np.array(times[1:])
 
