@@ -4,7 +4,7 @@ import mplhep as hep
 
 plt.style.use(hep.style.CMS)
 
-def plot_throughput_latency(data, save_filename, ratio_key=None):
+def plot_throughput_latency(data, save_filename, ratio_key=None, ratio_label="Ratio"):
     '''
     A function to plot throughput and latency. Expects a nested dictionary like:
     {
@@ -43,6 +43,14 @@ def plot_throughput_latency(data, save_filename, ratio_key=None):
     throughput_main_ax.legend()
     throughput_main_ax.set_xlim(min_size, max_size)
 
+    # If ratio plot below, don't show tick label at zero
+    if use_ratio:
+        yticks = throughput_main_ax.get_yticks()
+        labels = throughput_main_ax.get_yticklabels()
+        for tick, label in zip(yticks, labels):
+            if (tick <= 0):
+                label.set_visible(False)
+
     latency_main_ax.set_ylabel('Latency [ms]')
     latency_main_ax.set_yscale('log')
     latency_main_ax.set_xticklabels([])
@@ -73,9 +81,14 @@ def plot_throughput_latency(data, save_filename, ratio_key=None):
             throughput_ratio_ax.plot(ratio_sizes, throughput_ratios, linestyle='-', marker='o', label=name, color=data[name].get('color', None))
             latency_ratio_ax.plot(ratio_sizes, latency_ratios, linestyle='-', marker='o', label=name, color=data[name].get('color', None))
 
-            throughput_ratio_ax.set_ylabel("Ratio")
-            latency_ratio_ax.set_ylabel("Ratio")
+            throughput_ratio_ax.set_ylabel(ratio_label)
+            latency_ratio_ax.set_ylabel(ratio_label)
         
         fig.subplots_adjust(hspace=0)
+
+    hep.cms.text("Simulation Preliminary", ax=throughput_main_ax)
+    hep.cms.lumitext("(13 TeV)", ax=throughput_main_ax)
+    hep.cms.text("Simulation Preliminary", ax=latency_main_ax)
+    hep.cms.lumitext("(13 TeV)", ax=latency_main_ax)
 
     fig.savefig(save_filename)
