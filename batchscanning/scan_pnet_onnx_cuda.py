@@ -1,5 +1,3 @@
-# from matplotlib import pyplot as plt
-# import mplhep as hep
 import numpy as np
 import argparse
 import time
@@ -8,11 +6,9 @@ import onnxruntime as rt
 import plotting
 
 # All this to get matplotlib to shut up
-# import logging
-# mpl_logger = logging.getLogger('matplotlib')
-# mpl_logger.setLevel(logging.WARNING)
-
-#plt.style.use(hep.style.CMS)
+import logging
+mpl_logger = logging.getLogger('matplotlib')
+mpl_logger.setLevel(logging.WARNING)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("save_name", help="Filename for saving.", type=str)
@@ -95,26 +91,3 @@ plotting_dict = {
     args.gpu_type: {'batch_size': batch_sizes, 'throughput': throughputs, 'latency': latencies}
 }
 plotting.plot_throughput_latency(plotting_dict, save_folder+"/"+args.save_name)
-
-# fig, axs = plt.subplots(1, 2, figsize=[20, 8])
-
-# axs[0].plot(batch_sizes, throughputs, linestyle='-', marker='o', label=args.gpu_type)
-# axs[1].plot(batch_sizes, latencies, linestyle='-', marker='o', label=args.gpu_type)
-
-# axs[0].set_ylabel('Throughput [evt/s]')
-# axs[0].set_xticklabels([])
-# axs[0].set_xscale('log')
-# axs[0].legend()
-# axs[0].set_xlim(batch_sizes[0], batch_sizes[-1])
-
-# axs[1].set_ylabel('Latency [ms]')
-# axs[1].set_yscale('log')
-# axs[1].set_xticklabels([])
-# axs[1].set_xscale('log')
-# axs[1].legend()
-# axs[1].set_xlim(batch_sizes[0], batch_sizes[-1])
-
-# axs[0].set_xlabel("Batch size")
-# axs[1].set_xlabel("Batch size")
-
-# fig.savefig(save_folder+"/"+args.save_name)

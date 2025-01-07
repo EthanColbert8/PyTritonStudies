@@ -86,9 +86,10 @@ def plot_throughput_latency(data, save_filename, ratio_key=None, ratio_label="Ra
         
         fig.subplots_adjust(hspace=0)
 
-    hep.cms.text("Simulation Preliminary", ax=throughput_main_ax)
-    hep.cms.lumitext("(13 TeV)", ax=throughput_main_ax)
-    hep.cms.text("Simulation Preliminary", ax=latency_main_ax)
-    hep.cms.lumitext("(13 TeV)", ax=latency_main_ax)
+    # Put CMS labels on plots
+    # hep.cms.text("Simulation Preliminary", ax=throughput_main_ax)
+    # hep.cms.lumitext("(13 TeV)", ax=throughput_main_ax)
+    # hep.cms.text("Simulation Preliminary", ax=latency_main_ax)
+    # hep.cms.lumitext("(13 TeV)", ax=latency_main_ax)
 
     fig.savefig(save_filename)

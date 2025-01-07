@@ -8,9 +8,9 @@ import onnxruntime as rt
 import plotting
 
 # All this to get matplotlib to shut up
-# import logging
-# mpl_logger = logging.getLogger('matplotlib')
-# mpl_logger.setLevel(logging.WARNING)
+import logging
+mpl_logger = logging.getLogger('matplotlib')
+mpl_logger.setLevel(logging.WARNING)
 
 #plt.style.use(hep.style.CMS)
 
@@ -19,14 +19,17 @@ parser.add_argument("save_name", help="Filename for saving.", type=str)
 parser.add_argument("gpu_type", help="GPU model for labeling", type=str)
 args = parser.parse_args()
 
-path = "/work1/yfeng/colberte/sonic-models/models/particlenet_AK4/1/model.onnx"
-save_folder = "/work1/yfeng/colberte/Scans/plots"
+# path = "/work1/yfeng/colberte/sonic-models/models/particlenet_AK4/1/model.onnx"
+# save_folder = "/work1/yfeng/colberte/Scans/plots"
+path = "/depot/cms/users/colberte/SONIC/sonic-models/models/particlenet_AK4/1/model.onnx"
+save_folder = "/depot/cms/users/colberte/SONIC/Scans/direct/plots"
 
 #providers = ['ROCMExecutionProvider', 'CPUExecutionProvider']
 providers = ['ROCMExecutionProvider']
 sess_options = rt.SessionOptions()
-sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_ALL
-#sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_BASIC # To match runs that use older software
+#sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_ALL
+sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_BASIC # To match runs that use older software
+#sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_DISABLE_ALL # Seeing if this fixes batchnorm problem on ROCm - it didn't
 
 sess = rt.InferenceSession(path, sess_options=sess_options, providers=providers)
 print("provider: ", sess.get_providers())
@@ -96,26 +99,3 @@ plotting_dict = {
     args.gpu_type: {'batch_size': batch_sizes, 'throughput': throughputs, 'latency': latencies}
 }
 plotting.plot_throughput_latency(plotting_dict, save_folder+"/"+args.save_name)
-
-# fig, axs = plt.subplots(1, 2, figsize=[20, 8])
-
-# axs[0].plot(batch_sizes, throughputs, linestyle='-', marker='o', label=args.gpu_type)
-# axs[1].plot(batch_sizes, latencies, linestyle='-', marker='o', label=args.gpu_type)
-
-# axs[0].set_ylabel('Throughput [evt/s]')
-# axs[0].set_xticklabels([])
-# axs[0].set_xscale('log')
-# axs[0].legend()
-# axs[0].set_xlim(batch_sizes[0], batch_sizes[-1])
-
-# axs[1].set_ylabel('Latency [ms]')
-# axs[1].set_yscale('log')
-# axs[1].set_xticklabels([])
-# axs[1].set_xscale('log')
-# axs[1].legend()
-# axs[1].set_xlim(batch_sizes[0], batch_sizes[-1])
-
-# axs[0].set_xlabel("Batch size")
-# axs[1].set_xlabel("Batch size")
-
-# fig.savefig(save_folder+"/"+args.save_name)
