@@ -34,8 +34,15 @@ def plot_throughput_latency(data, save_filename, ratio_key=None, ratio_label="Ra
     max_size = np.max([data[name]['batch_size'][-1] for name in names])
 
     for name in names:
-        throughput_main_ax.plot(data[name]['batch_size'], data[name]['throughput'], linestyle='-', marker='o', label=name, color=data[name].get('color', None))
-        latency_main_ax.plot(data[name]['batch_size'], data[name]['latency'], linestyle='-', marker='o', label=name, color=data[name].get('color', None))
+        if (data[name].get('throughput_error', None) is not None):
+            throughput_main_ax.errorbar(data[name]['batch_size'], data[name]['throughput'], yerr=data[name]['throughput_error'], fmt='o-', label=name, color=data[name].get('color', None))
+        else:
+            throughput_main_ax.plot(data[name]['batch_size'], data[name]['throughput'], linestyle='-', marker='o', label=name, color=data[name].get('color', None))
+
+        if (data[name].get('latency_error', None) is not None):
+            latency_main_ax.errorbar(data[name]['batch_size'], data[name]['latency'], yerr=data[name]['latency_error'], fmt='o-', label=name, color=data[name].get('color', None))
+        else:
+            latency_main_ax.plot(data[name]['batch_size'], data[name]['latency'], linestyle='-', marker='o', label=name, color=data[name].get('color', None))
 
     throughput_main_ax.set_ylabel('Throughput [evt/s]')
     throughput_main_ax.set_xticklabels([])
