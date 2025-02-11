@@ -100,3 +100,25 @@ def plot_throughput_latency(data, save_filename, ratio_key=None, ratio_label="Ra
     # hep.cms.lumitext("(13 TeV)", ax=latency_main_ax)
 
     fig.savefig(save_filename)
+
+
+def plot_time_series(timestamps, data, save_filename, vlines=None, y_label="Utilization [%]", y_scale='linear'):
+    fig, ax = plt.subplots(figsize=[8, 6], dpi=100)
+
+    if (vlines is not None):
+        for vline in vlines:
+            ax.axvline(x=vline, color='red', linestyle='--')
+
+    for name in data.keys():
+        ax.plot(timestamps, data[name], label=name)
+
+    ax.set_xlim(left=0)
+    ax.set_ylim(bottom=0, top=100)
+
+    ax.set_xlabel('Time [s]')
+    ax.set_ylabel(y_label)
+
+    ax.set_yscale(y_scale)
+    ax.legend()
+
+    fig.savefig(save_filename)

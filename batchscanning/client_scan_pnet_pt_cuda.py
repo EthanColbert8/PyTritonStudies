@@ -17,9 +17,12 @@ save_folder = "/depot/cms/users/colberte/SONIC/Scans/triton"
 model_name = "particlenet_AK4_PT"
 batch_sizes = [4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
 n_trials = 101
+sqrt_trials = 10.0
 
 throughputs = []
+throughput_errors = []
 latencies = []
+latency_errors = []
 
 with grpcclient.InferenceServerClient("localhost:8001") as client:
     for batch_size in batch_sizes:
@@ -72,13 +75,31 @@ with grpcclient.InferenceServerClient("localhost:8001") as client:
         latency = 1e3 * times_array # time to get a request back, in MILLIseconds
 
         throughputs.append(np.mean(throughput))
-        latencies.append(np.mean(latency))
+        throughput_errors.append(np.std(throughput) / sqrt_trials)
 
+        latencies.append(np.mean(latency))
+        latency_errors.append(np.std(latency) / sqrt_trials)
+
+print("Batch sizes scanned:")
 print(batch_sizes)
+
+print("Throughput values:")
 print(throughputs)
+print("Throughput SEM:")
+print(throughput_errors)
+
+print("Latency values:")
 print(latencies)
+print("Latency SEM:")
+print(latency_errors)
 
 plotting_dict = {
-    args.gpu_type: {'batch_size': batch_sizes, 'throughput': throughputs, 'latency': latencies}
+    args.gpu_type: {
+        'batch_size': batch_sizes,
+        'throughput': throughputs,
+        'throughput_error': throughput_errors,
+        'latency': latencies,
+        'latency_error': latency_errors,
+    }
 }
 plotting.plot_throughput_latency(plotting_dict, save_folder+"/"+args.save_name)

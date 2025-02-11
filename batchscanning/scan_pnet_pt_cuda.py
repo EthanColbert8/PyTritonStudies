@@ -3,7 +3,10 @@ import mplhep as hep
 import numpy as np
 import argparse
 import time
+from datetime import datetime
 import torch
+
+import plotting
 
 # All this to get matplotlib to shut up
 # import logging
@@ -32,11 +35,18 @@ model.eval()
 batch_sizes = [4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]#, 4096]
 #batch_sizes = [120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132]
 n_trials = 101 # number of timed trials to run at each batch size
+sqrt_trials = 10.0 # for convenience (and correction - we toss the first trial)
 throughputs = []
+throughput_errors = []
 latencies = []
+latency_errors = []
 with torch.no_grad():
     for size in batch_sizes:
         times = []
+
+        current_time = datetime.now()
+        print("Starting batch size " + str(size) + " at time: " + current_time.strftime('%Y-%m-%d %H:%M:%S') + f'.{int(current_time.microsecond // 1e5)}')
+
         for trial in range(1, n_trials+1):
             pf_points   = torch.randn(size, 2,  100).to('cpu')
             pf_features = torch.randn(size, 20, 100).to('cpu')
@@ -75,31 +85,54 @@ with torch.no_grad():
         latency = 1e3 * times_array # time to get a request back, in MILLIseconds
 
         throughputs.append(np.mean(throughput))
+        throughput_errors.append(np.std(throughput) / sqrt_trials)
+
         latencies.append(np.mean(latency))
+        latency_errors.append(np.std(latency) / sqrt_trials)
 
+print("Batch sizes scanned:")
 print(batch_sizes)
+
+print("Throughput values:")
 print(throughputs)
+print("Throughput SEM:")
+print(throughput_errors)
+
+print("Latency values:")
 print(latencies)
+print("Latency SEM:")
+print(latency_errors)
 
-fig, axs = plt.subplots(1, 2, figsize=[20, 8])
+# fig, axs = plt.subplots(1, 2, figsize=[20, 8])
 
-axs[0].plot(batch_sizes, throughputs, linestyle='-', marker='o', label=args.gpu_type)
-axs[1].plot(batch_sizes, latencies, linestyle='-', marker='o', label=args.gpu_type)
+# axs[0].plot(batch_sizes, throughputs, linestyle='-', marker='o', label=args.gpu_type)
+# axs[1].plot(batch_sizes, latencies, linestyle='-', marker='o', label=args.gpu_type)
 
-axs[0].set_ylabel('Throughput [evt/s]')
-axs[0].set_xticklabels([])
-axs[0].set_xscale('log')
-axs[0].legend()
-axs[0].set_xlim(batch_sizes[0], batch_sizes[-1])
+# axs[0].set_ylabel('Throughput [evt/s]')
+# axs[0].set_xticklabels([])
+# axs[0].set_xscale('log')
+# axs[0].legend()
+# axs[0].set_xlim(batch_sizes[0], batch_sizes[-1])
 
-axs[1].set_ylabel('Latency [ms]')
-axs[1].set_yscale('log')
-axs[1].set_xticklabels([])
-axs[1].set_xscale('log')
-axs[1].legend()
-axs[1].set_xlim(batch_sizes[0], batch_sizes[-1])
+# axs[1].set_ylabel('Latency [ms]')
+# axs[1].set_yscale('log')
+# axs[1].set_xticklabels([])
+# axs[1].set_xscale('log')
+# axs[1].legend()
+# axs[1].set_xlim(batch_sizes[0], batch_sizes[-1])
 
-axs[0].set_xlabel("Batch size")
-axs[1].set_xlabel("Batch size")
+# axs[0].set_xlabel("Batch size")
+# axs[1].set_xlabel("Batch size")
 
-fig.savefig(save_folder+"/"+args.save_name)
+# fig.savefig(save_folder+"/"+args.save_name)
+
+plotting_dict = {
+    args.gpu_type: {
+        'batch_size': batch_sizes,
+        'throughput': throughputs,
+        'throughput_error': throughput_errors,
+        'latency': latencies,
+        'latency_error': latency_errors,
+    }
+}
+plotting.plot_throughput_latency(plotting_dict, save_folder+"/"+args.save_name)

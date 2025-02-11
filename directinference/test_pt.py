@@ -1,6 +1,7 @@
 import torch
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print("Device: " + str(device))
 
 path = "../../sonic-models/models/particlenet_AK4_PT/1/model.pt"
 
