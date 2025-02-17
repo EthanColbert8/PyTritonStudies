@@ -102,7 +102,7 @@ def plot_throughput_latency(data, save_filename, ratio_key=None, ratio_label="Ra
     fig.savefig(save_filename)
 
 
-def plot_time_series(timestamps, data, save_filename, vlines=None, y_label="Utilization [%]", y_scale='linear'):
+def plot_time_series(timestamps, data, save_filename, vlines=None, title="Nvidia GPU", y_label="Utilization [%]", y_scale='linear'):
     fig, ax = plt.subplots(figsize=[8, 6], dpi=100)
 
     if (vlines is not None):
@@ -114,11 +114,12 @@ def plot_time_series(timestamps, data, save_filename, vlines=None, y_label="Util
 
     ax.set_xlim(left=0)
     ax.set_ylim(bottom=0, top=100)
+    ax.set_yscale(y_scale)
 
     ax.set_xlabel('Time [s]')
     ax.set_ylabel(y_label)
 
-    ax.set_yscale(y_scale)
+    ax.set_title(title)
     ax.legend()
 
     fig.savefig(save_filename)
