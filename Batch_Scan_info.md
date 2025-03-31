@@ -76,4 +76,41 @@ It is included in the job script that is submitted as a batch job on the AMD HPC
 Importantly, the GPU compute _utilization_ that is recorded is **not** equivalent to GPU compute _saturation_. Rather, it is the percentage of time that _any_ compute on the GPU is busy. We are interested in investigating ways to measure GPU compute saturation in more detailed and robust ways with AMD GPUs.
 
 ## Triton Inference Server
-Currently, we are exploring using Nvidia's Triton Inferece Server HERE
+Currently, HEP collaborations are building inference pipelines on Nvidia's [Triton Inference Server](https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/index.html). Using Triton servers enables inference to be performed _asynchronously_, on _heterogeneous_ compute facilities, and _dynamically batched_, properties that are desirable, if not necessary, to meet computing needs over the next decade(s). 
+
+Triton servers are typically deployed as Docker containers (provided by Nvidia), however, the Triton builds in the containers don't support ROCm, so they can only be used with Nvidia GPUs. An alternative to containerized builds is the [PyTriton](https://triton-inference-server.github.io/pytriton/latest/) Python package, which allows the inference function to be defined, and the server started, in Python. This allows us to use the ROCm builds of ML frameworks (PyTorch, ONNX, etc.) to do the actual inference, while using Triton to handle communications.
+
+Examples of the code used to start a server are our [PyTorch server script](https://github.com/EthanColbert8/PyTritonStudies/blob/main/server/server_pnet_pt.py) and [ONNX server script](https://github.com/EthanColbert8/PyTritonStudies/blob/main/server/server_pnet_onnx.py), both of which use the ParticleNet model. In both cases, the `__infer_fn` function contains all code needed to convert inputs to an appropriate format (Torch tensor on GPU, etc.) and run inference. Thus, in benchmark scans using the same method as above, "inference" will always be a single call to request inference from the server.
+
+### Clients and Requests
+Benchmarks using the same method outlined above for the direct-inference case can be done with Triton servers. In this case, the scan script must create a Triton client and send inference requests to the server. In my scan scripts (such as the [PyTorch one](https://github.com/EthanColbert8/PyTritonStudies/blob/main/batchscanning/client_scan_pnet_pt_rocm.py)), this is done in the following way:
+
+```
+from pytriton.client import ModelClient
+
+with ModelClient('grpc://localhost:9001', 'pnet_pytorch') as client:
+
+    # Set up sizes, trials, and inputs...
+
+    start_time = time.perf_counter_ns()
+    results = client.infer_batch(*inputs)
+    end_time = time.perf_counter_ns()
+
+    # Save processing time...
+```
+
+With a scan like this, we **expect lower throughput** than achieved with direct inference. This is because we only make a single inference request at a time and wait for a response, so Triton is, effectively, only adding overhead. To obtain a more robust measurement of the performance of a Triton server, we need to make _multiple concurrent_ inference requests.
+
+### Perf Analyzer
+Nvidia provides a tool called [`perf_analyzer`](https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/perf_analyzer/README.html) to aid in profiling model performance with Triton. This tool assesses model performance by attempting to maintain a configurable number of concurrent inference requests (at a configurable batch size) and waiting for the latency to stabilize.
+
+The `perf_analyzer` tool is provided in a separate Triton SDK container. Since Docker is not widely supported on HEP sites, we convert the container to [Apptainer](https://apptainer.org/docs/user/latest/) (formerly Singularity) using `apptainer pull`. On the AMD Research Cloud cluster, a converted container is located at:
+```
+/work1/yfeng/colberte/triton_23.01.sdk.sif
+```
+
+Running benchmarks with `perf_analyzer` involves running a script inside this container. The script itself (see [the PyTorch ParticleNet one](https://github.com/EthanColbert8/PyTritonStudies/blob/main/batchscanning/perf_client_scan_pnet_pt.py)), again in Python, simply runs the `perf_analyzer` command at each batch size in the scan. In a batch job, a server is first started (no containers involved), then the line:
+```
+apptainer exec --bind $WORKING_DIR:$WORKING_DIR $SDK_CONTAINER_LOC python $SCAN_SCRIPT $WORKING_DIR/folder/to/store/results
+```
+is used to accomplish the scan.
