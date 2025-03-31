@@ -3,6 +3,7 @@ import mplhep as hep
 import numpy as np
 import argparse
 import time
+from datetime import datetime
 import torch
 
 import plotting
@@ -22,10 +23,8 @@ args = parser.parse_args()
 path = "/work1/yfeng/colberte/sonic-models/models/particlenet_AK4_PT/1/model.pt"
 save_folder = "/work1/yfeng/colberte/Scans/direct"
 
-device = 'cpu'
-if torch.cuda.is_available():
-    device = 'cuda'
-print("Device: " + device)
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+print("Device: " + str(device))
 
 model = torch.jit.load(path)
 model = model.to(device)
@@ -42,6 +41,10 @@ latency_errors = []
 with torch.no_grad():
     for size in batch_sizes:
         times = []
+
+        current_time = datetime.now()
+        print("Starting batch size " + str(size) + " at time: " + current_time.strftime('%Y-%m-%d %H:%M:%S') + f'.{int(current_time.microsecond // 1e5)}')
+
         for trial in range(1, n_trials+1):
             pf_points   = torch.randn(size, 2,  100).to('cpu')
             pf_features = torch.randn(size, 20, 100).to('cpu')
@@ -67,6 +70,8 @@ with torch.no_grad():
             sv_mask = sv_mask.to(device)
 
             pred_pt = model(pf_points, pf_features, pf_mask, sv_points, sv_features, sv_mask)
+
+            torch.cuda.synchronize() # wait for model to actually finish
 
             end_time = time.perf_counter_ns()
 

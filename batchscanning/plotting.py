@@ -112,7 +112,7 @@ def plot_time_series(timestamps, data, save_filename, vlines=None, title="Nvidia
     for name in data.keys():
         ax.plot(timestamps, data[name], label=name)
 
-    ax.set_xlim(left=0)
+    ax.set_xlim(left=0, right=90)
     ax.set_ylim(bottom=0, top=100)
     ax.set_yscale(y_scale)
 

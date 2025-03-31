@@ -3,6 +3,7 @@
 import numpy as np
 import argparse
 import time
+from datetime import datetime
 import tensorflow as tf
 
 import plotting
@@ -38,6 +39,10 @@ throughputs = []
 latencies = []
 for size in batch_sizes:
     times = []
+
+    current_time = datetime.now()
+    print("Starting batch size " + str(size) + " at time: " + current_time.strftime('%Y-%m-%d %H:%M:%S') + f'.{int(current_time.microsecond // 1e5)}')
+
     for trial in range(1, n_trials+1):
         a = np.random.randn(size,4500,8)
         # b = np.random.randn((size,4500,1))

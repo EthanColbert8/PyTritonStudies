@@ -5,29 +5,40 @@ from datetime import datetime
 
 import plotting
 
-save_folder = "/depot/cms/users/colberte/SONIC/Scans/resources"
+#save_folder = "/depot/cms/users/colberte/SONIC/Scans/resources"
+save_folder = "/work1/yfeng/colberte/Scans/resources"
 
 logs_to_plot = {
-    'Nvidia A10': {
-        'resource_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/A10_resource_log_02-10-25.csv",
-        'job_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/A10_02-10-25.out",
-        'filename': "resources_A10_02-10-25.png",
+    # 'Nvidia A10': {
+    #     'resource_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/A10_resource_log_02-10-25.csv",
+    #     'job_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/A10_02-10-25.out",
+    #     'filename': "resources_A10_02-10-25.png",
+    # },
+    # 'Nvidia A30': {
+    #     'resource_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/A30_resource_log_02-10-25.csv",
+    #     'job_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/A30_02-10-25.out",
+    #     'filename': "resources_A30_02-10-25.png",
+    # },
+    # 'Nvidia A100 (40 GB)': {
+    #     'resource_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/A100_resource_log_02-10-25.csv",
+    #     'job_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/A100_02-10-25.out",
+    #     'filename': "resources_A100_02-10-25.png",
+    # },
+    # 'Nvidia V100 (32 GB)': {
+    #     'resource_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/V100_resource_log_02-10-25.csv",
+    #     'job_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/V100_02-10-25.out",
+    #     'filename': "resources_V100_02-10-25.png",
+    # }
+    # 'AMD MI100': {
+    #     'resource_log_file': "",
+    #     'job_log_file': "",
+    #     'filename': "resources_MI100_02-10-25",
+    # },
+    'AMD MI210': {
+        'resource_log_file': "/work1/yfeng/colberte/PyTritonStudies/batchscanning/scans_pnet_pt_logged/MI210_resource_log_02-10-25.csv",
+        'job_log_file': "/work1/yfeng/colberte/PyTritonStudies/batchscanning/scans_pnet_pt_logged/MI210_02-10-25.out",
+        'filename': "resources_MI210_02-10-25",
     },
-    'Nvidia A30': {
-        'resource_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/A30_resource_log_02-10-25.csv",
-        'job_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/A30_02-10-25.out",
-        'filename': "resources_A30_02-10-25.png",
-    },
-    'Nvidia A100 (40 GB)': {
-        'resource_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/A100_resource_log_02-10-25.csv",
-        'job_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/A100_02-10-25.out",
-        'filename': "resources_A100_02-10-25.png",
-    },
-    'Nvidia V100 (32 GB)': {
-        'resource_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/V100_resource_log_02-10-25.csv",
-        'job_log_file': "/depot/cms/users/colberte/SONIC/PyTritonStudies/batchscanning/scans_pnet_pt_gilbreth_logged/V100_02-10-25.out",
-        'filename': "resources_V100_02-10-25.png",
-    }
 }
 
 for name, logs in logs_to_plot.items():
